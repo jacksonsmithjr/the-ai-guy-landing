@@ -899,6 +899,27 @@
         transform: translateY(-1px);
       }
 
+      .form-status {
+        margin-top: 10px;
+        border-radius: 16px;
+        padding: 12px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .form-status.success {
+        border-color: rgba(232, 25, 44, 0.35);
+        box-shadow: 0 0 0 6px rgba(232, 25, 44, 0.08);
+      }
+
+      .form-status.error {
+        border-color: rgba(232, 25, 44, 0.55);
+        box-shadow: 0 0 0 6px rgba(232, 25, 44, 0.12);
+      }
+
       .submit {
         margin-top: 6px;
         width: 100%;
@@ -1349,6 +1370,8 @@
                   <span class="arrow" aria-hidden="true">→</span>
                 </button>
 
+                <div class="form-status" id="formStatus" role="status" aria-live="polite" style="display: none"></div>
+
                 <p class="fine" style="margin-top: 8px">
                   Prefer a call? Dial <a href="tel:8289449648"><strong>828-944-9648</strong></a>.
                 </p>
@@ -1381,6 +1404,11 @@
       (function () {
         const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (prefersReducedMotion) document.documentElement.classList.add("reduce-motion");
+
+        // GoHighLevel (GHL) lead capture webhook
+        // REPLACE: Paste your GHL Workflow/Webhook URL here to capture form submissions.
+        // Example: const GHL_WEBHOOK_URL = "https://hooks.leadconnectorhq.com/webhook/....";
+        const GHL_WEBHOOK_URL = "YOUR_GHL_WEBHOOK_URL";
 
         // Mobile nav
         const hamburger = document.getElementById("hamburger");
@@ -1513,19 +1541,74 @@
           howIO.observe(howWrap);
         }
 
-        // Lead form: lightweight client validation (does not replace backend validation)
+        // Lead form: lightweight client validation + optional GHL webhook submission
         const form = document.getElementById("leadForm");
-        form?.addEventListener("submit", (e) => {
+        const formStatus = document.getElementById("formStatus");
+        const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+        function setStatus(message, kind) {
+          if (!formStatus) return;
+          formStatus.textContent = message;
+          formStatus.classList.remove("success", "error");
+          if (kind) formStatus.classList.add(kind);
+          formStatus.style.display = "block";
+        }
+
+        function flashInvalid(input) {
+          input.focus();
+          input.style.borderColor = "rgba(232, 25, 44, 0.72)";
+          window.setTimeout(() => {
+            input.style.borderColor = "";
+          }, 900);
+        }
+
+        form?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
           const required = Array.from(form.querySelectorAll("input[required]"));
           const invalid = required.find((i) => !i.value.trim());
           if (invalid) {
-            e.preventDefault();
-            invalid.focus();
-            invalid.style.borderColor = "rgba(232, 25, 44, 0.72)";
-            window.setTimeout(() => {
-              invalid.style.borderColor = "";
-            }, 900);
+            setStatus("Please fill out all required fields.", "error");
+            flashInvalid(invalid);
             return;
+          }
+
+          const isConfigured =
+            typeof GHL_WEBHOOK_URL === "string" &&
+            GHL_WEBHOOK_URL.startsWith("http") &&
+            !GHL_WEBHOOK_URL.includes("YOUR_GHL_WEBHOOK_URL");
+
+          if (!isConfigured) {
+            setStatus("Form is not connected yet. Replace YOUR_GHL_WEBHOOK_URL to capture leads in GHL.", "error");
+            return;
+          }
+
+          try {
+            if (submitBtn) submitBtn.disabled = true;
+            setStatus("Sending…", "");
+
+            const fd = new FormData(form);
+            // Add a few helpful context fields for GHL workflows
+            fd.set("source", "the-ai-guy-landing");
+            fd.set("page_url", window.location.href);
+
+            const body = new URLSearchParams();
+            for (const [k, v] of fd.entries()) body.append(k, String(v));
+
+            const res = await fetch(GHL_WEBHOOK_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+              body: body.toString(),
+            });
+
+            if (!res.ok) throw new Error("Bad response");
+
+            form.reset();
+            setStatus("You’re in. We’ll reach out shortly to schedule your free demo.", "success");
+          } catch (err) {
+            setStatus("Something went wrong sending your request. Please call 828-944-9648.", "error");
+          } finally {
+            if (submitBtn) submitBtn.disabled = false;
           }
         });
       })();
