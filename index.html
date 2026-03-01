@@ -70,6 +70,13 @@
         padding: 0 var(--pad);
       }
 
+      /* Ensure decorative accents never cover content */
+      .section > .container,
+      footer .container {
+        position: relative;
+        z-index: 2;
+      }
+
       .section {
         position: relative;
         padding: clamp(68px, 7vw, 104px) 0;
@@ -561,7 +568,7 @@
         height: 110px;
         pointer-events: none;
         opacity: 0.98;
-        z-index: 3;
+        z-index: 0;
       }
 
       .corner.tl {
@@ -1030,9 +1037,33 @@
           grid-template-columns: 1fr;
         }
         .corner {
-          width: 92px;
-          height: 92px;
+          width: 76px;
+          height: 76px;
+          opacity: 0.82;
         }
+
+        /* Push corners slightly out so they don't crowd content on mobile */
+        .corner.tl {
+          top: -10px;
+          left: -10px;
+        }
+        .corner.tr {
+          top: -10px;
+          right: -10px;
+        }
+        .corner.bl {
+          bottom: -10px;
+          left: -10px;
+        }
+        .corner.br {
+          bottom: -10px;
+          right: -10px;
+        }
+
+        footer .corner {
+          opacity: 0.68;
+        }
+
         .field-row {
           grid-template-columns: 1fr;
         }
