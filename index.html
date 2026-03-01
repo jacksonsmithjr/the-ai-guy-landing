@@ -1441,6 +1441,11 @@
         const GHL_WEBHOOK_URL =
           "https://services.leadconnectorhq.com/hooks/tqXxSsySwIXpcaeMp8IM/webhook-trigger/jXc0NEf2hQwTiET0L3m2";
 
+        // Calendly redirect after successful form submit
+        // REPLACE: Paste your Calendly booking link here.
+        // Example: const CALENDLY_URL = "https://calendly.com/your-handle/demo";
+        const CALENDLY_URL = "YOUR_CALENDLY_URL";
+
         // Mobile nav
         const hamburger = document.getElementById("hamburger");
         const mobileDrawer = document.getElementById("mobileDrawer");
@@ -1611,6 +1616,9 @@
             return;
           }
 
+          const calendlyConfigured =
+            typeof CALENDLY_URL === "string" && CALENDLY_URL.startsWith("http") && !CALENDLY_URL.includes("YOUR_CALENDLY_URL");
+
           try {
             if (submitBtn) submitBtn.disabled = true;
             setStatus("Sending…", "");
@@ -1638,7 +1646,14 @@
             if (res.type === "basic" && !res.ok) throw new Error("Bad response");
 
             form.reset();
-            setStatus("You’re in. We’ll reach out shortly to schedule your free demo.", "success");
+            if (calendlyConfigured) {
+              setStatus("You’re in. Redirecting you to book your demo…", "success");
+              window.setTimeout(() => {
+                window.location.assign(CALENDLY_URL);
+              }, prefersReducedMotion ? 0 : 650);
+            } else {
+              setStatus("You’re in. We’ll reach out shortly to schedule your free demo.", "success");
+            }
           } catch (err) {
             setStatus("Something went wrong sending your request. Please call 828-944-9648.", "error");
           } finally {
