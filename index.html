@@ -746,14 +746,45 @@
       }
 
       .demo-placeholder {
+        position: relative;
         border-radius: 18px;
         border: 2px dashed rgba(232, 25, 44, 0.65);
         background: rgba(232, 25, 44, 0.04);
-        min-height: clamp(260px, 42vh, 420px);
+        height: clamp(340px, 52vh, 520px);
+        overflow: hidden;
+      }
+
+      .demo-mount {
+        position: absolute;
+        inset: 0;
+      }
+
+      .demo-fallback {
+        position: absolute;
+        inset: 0;
         display: grid;
         place-items: center;
         text-align: center;
         padding: 24px;
+        pointer-events: none;
+        transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
+      }
+
+      .demo-placeholder.widget-loaded {
+        border-style: solid;
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .demo-placeholder.widget-loaded .demo-fallback {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      .demo-mount chat-widget,
+      .demo-mount div[data-chat-widget] {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       .demo-placeholder .label {
@@ -1292,24 +1323,36 @@
           <div class="kicker">Try it now</div>
           <h2 class="section-title">EXPERIENCE THE AI RIGHT NOW</h2>
           <p class="section-sub">
-            Don’t take our word for it — call in and experience the AI. (Live chat is being upgraded and will be back soon.)
+            Chat with the AI below (text), or call for voice.
           </p>
         </div>
 
         <div class="demo-wrap reveal">
-          <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
+          <div class="demo-placeholder" id="chatWidgetBox" role="region" aria-label="AI chat widget">
+            <div class="demo-fallback" aria-hidden="true">
+              <div>
+                <div class="label">[ LIVE CHAT WIDGET ]</div>
+                <div class="label" style="margin-top: 10px">
+                  <span class="updating">Loading…</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="demo-mount" id="chatWidgetMount">
+              <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
+              <script
+                src="https://beta.leadconnectorhq.com/loader.js"
+                data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
+                data-widget-id="69a86703e62eed604889e62a"
+              ></script>
+            </div>
+          </div>
+
           <div class="demo-actions">
             <a class="btn primary-pulse" href="tel:8289449648">
               <span>CALL THE AI NOW — 828-944-9648</span>
               <span class="arrow" aria-hidden="true">→</span>
             </a>
-          </div>
-
-          <div class="demo-placeholder" role="region" aria-label="AI chat widget placeholder" style="margin-top: 16px">
-            <div class="label">[ LIVE CHAT WIDGET ]</div>
-            <div class="label" style="margin-top: 10px">
-              <span class="updating">Currently updating…</span>
-            </div>
           </div>
         </div>
       </div>
@@ -1476,6 +1519,21 @@
           const t = e.target;
           if (t && t.tagName === "A") setDrawer(false);
         });
+
+        // Mount GHL chat widget inside the Live Demo box (if present)
+        const chatBox = document.getElementById("chatWidgetBox");
+        const chatMount = document.getElementById("chatWidgetMount");
+        if (chatBox && chatMount) {
+          const markLoaded = () => {
+            const hasWidget =
+              chatMount.querySelector("chat-widget") || chatMount.querySelector("div[data-chat-widget]") || chatMount.querySelector("iframe");
+            if (hasWidget) chatBox.classList.add("widget-loaded");
+          };
+          markLoaded();
+          const mo = new MutationObserver(() => markLoaded());
+          mo.observe(chatMount, { childList: true, subtree: true });
+          window.setTimeout(() => mo.disconnect(), 20000);
+        }
 
         // Smooth scroll for links (keeps fixed header from covering targets)
         const headerOffset = 78;
