@@ -766,13 +766,19 @@
         background: rgba(232, 25, 44, 0.04);
         height: var(--demo-chat-height);
         overflow: hidden;
+        /* Creates a containing block so fixed-position bubble is clipped to this box */
+        transform: translateZ(0);
+        isolation: isolate;
       }
 
       .demo-mount {
         position: absolute;
         inset: 0;
+        width: 100%;
+        height: 100%;
         display: grid;
         place-items: center;
+        overflow: hidden;
       }
 
       .demo-fallback {
@@ -854,10 +860,11 @@
         }
       }
 
-      /* Center the bubble-style widget inside the frame */
+      /* Keep the bubble widget strictly inside the placeholder (no full-width escape) */
       .demo-mount chat-widget {
         position: relative !important;
-        width: var(--demo-bubble-box-w);
+        width: 100% !important;
+        max-width: 100% !important;
         height: var(--demo-bubble-box-h);
         display: block;
       }
