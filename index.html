@@ -63,6 +63,10 @@
         /* Live Demo chat "frame" sizing (tweak these to match your GHL widget size) */
         --demo-chat-height: clamp(420px, 62vh, 660px);
         --demo-chat-height-mobile: clamp(360px, 56vh, 520px);
+
+        /* If the widget renders as a launcher bubble, these help center it nicely */
+        --demo-bubble-box-w: min(420px, 100%);
+        --demo-bubble-box-h: 260px;
       }
 
       * {
@@ -761,6 +765,8 @@
       .demo-mount {
         position: absolute;
         inset: 0;
+        display: grid;
+        place-items: center;
       }
 
       .demo-fallback {
@@ -772,6 +778,81 @@
         padding: 24px;
         pointer-events: none;
         transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
+      }
+
+      .demo-hint {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 18px;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
+      }
+
+      .demo-placeholder.hint-hidden .demo-hint {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .demo-hint-card {
+        max-width: 46ch;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(10, 10, 10, 0.42);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 14px 14px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+      }
+
+      .demo-hint-title {
+        font-family: "Space Grotesk", Inter, system-ui, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 800;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .demo-hint-sub {
+        margin-top: 8px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.5;
+      }
+
+      .demo-hint-arrow {
+        margin: 10px auto 0;
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 14px solid rgba(232, 25, 44, 0.85);
+        filter: drop-shadow(0 0 14px rgba(232, 25, 44, 0.25));
+        animation: hintBob 1.35s ease-in-out infinite;
+      }
+
+      @keyframes hintBob {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.82;
+        }
+        50% {
+          transform: translateY(8px);
+          opacity: 1;
+        }
+      }
+
+      /* Center the bubble-style widget inside the frame */
+      .demo-mount chat-widget {
+        position: relative !important;
+        width: var(--demo-bubble-box-w);
+        height: var(--demo-bubble-box-h);
+        display: block;
       }
 
       .demo-placeholder.widget-loaded {
@@ -1124,6 +1205,10 @@
         .demo-placeholder {
           height: var(--demo-chat-height-mobile);
         }
+
+        :root {
+          --demo-bubble-box-h: 220px;
+        }
       }
     </style>
   </head>
@@ -1346,6 +1431,14 @@
               </div>
             </div>
 
+            <div class="demo-hint" id="chatHint" aria-hidden="true">
+              <div class="demo-hint-card">
+                <div class="demo-hint-title">Text the AI now</div>
+                <div class="demo-hint-sub">Tap the chat bubble inside this box to start the conversation.</div>
+                <div class="demo-hint-arrow"></div>
+              </div>
+            </div>
+
             <div class="demo-mount" id="chatWidgetMount">
               <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
               <script
@@ -1534,12 +1627,9 @@
         if (chatBox && chatMount) {
           const normalize = (el) => {
             try {
-              el.style.position = "absolute";
-              el.style.inset = "0";
-              el.style.width = "100%";
-              el.style.height = "100%";
-              el.style.maxWidth = "100%";
-              el.style.maxHeight = "100%";
+              // Let CSS size/center the widget inside our frame.
+              el.style.position = "relative";
+              el.style.inset = "";
             } catch (_) {}
           };
 
@@ -1565,6 +1655,11 @@
           });
           mo.observe(document.documentElement, { childList: true, subtree: true });
           window.setTimeout(() => mo.disconnect(), 20000);
+
+          // Hide the hint after first interaction (bubble click)
+          const hideHint = () => chatBox.classList.add("hint-hidden");
+          chatBox.addEventListener("click", hideHint, { once: true });
+          window.setTimeout(hideHint, 20000);
         }
 
         // Smooth scroll for links (keeps fixed header from covering targets)
