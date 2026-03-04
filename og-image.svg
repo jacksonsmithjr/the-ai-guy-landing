@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a0000"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Red corner accent -->
+  <path d="M0 0 L0 180 L180 180 L180 0 Z" fill="#E8192C"/>
+  <path d="M0 0 L0 140 L140 140 L140 0 Z" fill="#0a0a0a" transform="translate(20 20)"/>
+  <text x="120" y="320" font-family="Arial Black, sans-serif" font-size="72" font-weight="900" fill="#ffffff" letter-spacing="0.08em">THE AI GUY</text>
+  <text x="120" y="380" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.85)">Jackson Smith Jr  AI Automations Expert</text>
+  <text x="120" y="440" font-family="Arial, sans-serif" font-size="22" fill="rgba(255,255,255,0.7)">AI that answers your calls, follows up with leads, and books appointments  24/7</text>
+</svg>
