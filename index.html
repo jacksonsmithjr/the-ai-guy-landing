@@ -59,6 +59,10 @@
         --glow: 0 0 0 rgba(232, 25, 44, 0);
 
         --easeOut: cubic-bezier(0.16, 1, 0.3, 1);
+
+        /* Live Demo chat "frame" sizing (tweak these to match your GHL widget size) */
+        --demo-chat-height: clamp(420px, 62vh, 660px);
+        --demo-chat-height-mobile: clamp(360px, 56vh, 520px);
       }
 
       * {
@@ -750,7 +754,7 @@
         border-radius: 18px;
         border: 2px dashed rgba(232, 25, 44, 0.65);
         background: rgba(232, 25, 44, 0.04);
-        height: clamp(340px, 52vh, 520px);
+        height: var(--demo-chat-height);
         overflow: hidden;
       }
 
@@ -1116,6 +1120,10 @@
         .field-row {
           grid-template-columns: 1fr;
         }
+
+        .demo-placeholder {
+          height: var(--demo-chat-height-mobile);
+        }
       }
     </style>
   </head>
@@ -1343,7 +1351,7 @@
               <script
                 src="https://beta.leadconnectorhq.com/loader.js"
                 data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
-                data-widget-id="696e354450385bbf332e5a83"
+                data-widget-id="69a86703e62eed604889e62a"
               ></script>
             </div>
           </div>
