@@ -60,13 +60,14 @@
 
         --easeOut: cubic-bezier(0.16, 1, 0.3, 1);
 
-        /* Live Demo chat "frame" sizing (tweak these to match your GHL widget size) */
-        --demo-chat-height: clamp(420px, 62vh, 660px);
-        --demo-chat-height-mobile: clamp(360px, 56vh, 520px);
+        /* Live Demo: compact card so the bubble and hint sit close together */
+        --demo-chat-height: 200px;
+        --demo-chat-height-mobile: 180px;
+        --demo-chat-max-width: 380px;
 
-        /* If the widget renders as a launcher bubble, these help center it nicely */
-        --demo-bubble-box-w: min(420px, 100%);
-        --demo-bubble-box-h: 260px;
+        /* If the widget renders as a launcher bubble */
+        --demo-bubble-box-w: min(380px, 100%);
+        --demo-bubble-box-h: 180px;
       }
 
       * {
@@ -755,6 +756,9 @@
 
       .demo-placeholder {
         position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: var(--demo-chat-max-width);
         border-radius: 18px;
         border: 2px dashed rgba(232, 25, 44, 0.65);
         background: rgba(232, 25, 44, 0.04);
@@ -783,10 +787,11 @@
       .demo-hint {
         position: absolute;
         inset: 0;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        padding: 18px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        text-align: left;
+        padding: 14px 16px;
         pointer-events: none;
         opacity: 1;
         transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
@@ -825,13 +830,13 @@
       }
 
       .demo-hint-arrow {
-        margin: 10px auto 0;
+        margin: 8px 0 0;
         width: 0;
         height: 0;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 14px solid rgba(232, 25, 44, 0.85);
-        filter: drop-shadow(0 0 14px rgba(232, 25, 44, 0.25));
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+        border-right: 12px solid rgba(232, 25, 44, 0.85);
+        filter: drop-shadow(0 0 10px rgba(232, 25, 44, 0.25));
         animation: hintBob 1.35s ease-in-out infinite;
       }
 
@@ -865,7 +870,6 @@
         transform: translateY(8px);
       }
 
-      .demo-mount chat-widget,
       .demo-mount div[data-chat-widget] {
         width: 100%;
         height: 100%;
@@ -1207,7 +1211,7 @@
         }
 
         :root {
-          --demo-bubble-box-h: 220px;
+          --demo-bubble-box-h: 160px;
         }
       }
     </style>
