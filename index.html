@@ -784,74 +784,6 @@
         transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
       }
 
-      .demo-hint {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-start;
-        text-align: left;
-        padding: 14px 16px;
-        pointer-events: none;
-        opacity: 1;
-        transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
-      }
-
-      .demo-placeholder.hint-hidden .demo-hint {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-
-      .demo-hint-card {
-        max-width: 46ch;
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(10, 10, 10, 0.42);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        padding: 14px 14px;
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
-      }
-
-      .demo-hint-title {
-        font-family: "Space Grotesk", Inter, system-ui, sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        font-weight: 800;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
-      }
-
-      .demo-hint-sub {
-        margin-top: 8px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.75);
-        line-height: 1.5;
-      }
-
-      .demo-hint-arrow {
-        margin: 8px 0 0;
-        width: 0;
-        height: 0;
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-        border-left: 12px solid rgba(232, 25, 44, 0.85);
-        filter: drop-shadow(0 0 10px rgba(232, 25, 44, 0.25));
-        animation: hintBob 1.35s ease-in-out infinite;
-      }
-
-      @keyframes hintBob {
-        0%,
-        100% {
-          transform: translateY(0);
-          opacity: 0.82;
-        }
-        50% {
-          transform: translateY(8px);
-          opacity: 1;
-        }
-      }
-
       /* Center the bubble-style widget inside the frame */
       .demo-mount chat-widget {
         position: relative !important;
@@ -885,12 +817,16 @@
         font-size: 13px;
       }
 
-      .demo-actions {
-        margin-top: 16px;
+      .demo-actions-block {
         display: flex;
-        gap: 12px;
+        gap: 16px;
         flex-wrap: wrap;
         align-items: center;
+        margin-top: 0;
+      }
+
+      .demo-call-btn {
+        flex: 0 0 auto;
       }
 
       /* How it works timeline */
@@ -1425,36 +1361,28 @@
         </div>
 
         <div class="demo-wrap reveal">
-          <div class="demo-placeholder" id="chatWidgetBox" role="region" aria-label="AI chat widget">
-            <div class="demo-fallback" aria-hidden="true">
-              <div>
-                <div class="label">[ LIVE CHAT WIDGET ]</div>
-                <div class="label" style="margin-top: 10px">
-                  <span class="updating">Loading…</span>
+          <div class="demo-actions-block">
+            <div class="demo-placeholder" id="chatWidgetBox" role="region" aria-label="AI chat widget">
+              <div class="demo-fallback" aria-hidden="true">
+                <div>
+                  <div class="label">[ LIVE CHAT WIDGET ]</div>
+                  <div class="label" style="margin-top: 10px">
+                    <span class="updating">Loading…</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="demo-hint" id="chatHint" aria-hidden="true">
-              <div class="demo-hint-card">
-                <div class="demo-hint-title">Text the AI now</div>
-                <div class="demo-hint-sub">Tap the chat bubble button to the right to get started with text.</div>
-                <div class="demo-hint-arrow"></div>
+              <div class="demo-mount" id="chatWidgetMount">
+                <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
+                <script
+                  src="https://beta.leadconnectorhq.com/loader.js"
+                  data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
+                  data-widget-id="69a86703e62eed604889e62a"
+                ></script>
               </div>
             </div>
 
-            <div class="demo-mount" id="chatWidgetMount">
-              <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
-              <script
-                src="https://beta.leadconnectorhq.com/loader.js"
-                data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
-                data-widget-id="69a86703e62eed604889e62a"
-              ></script>
-            </div>
-          </div>
-
-          <div class="demo-actions">
-            <a class="btn primary-pulse" href="tel:8289449648">
+            <a class="btn primary-pulse demo-call-btn" href="tel:8289449648">
               <span>CALL THE AI NOW — 828-944-9648</span>
               <span class="arrow" aria-hidden="true">→</span>
             </a>
@@ -1659,11 +1587,6 @@
           });
           mo.observe(document.documentElement, { childList: true, subtree: true });
           window.setTimeout(() => mo.disconnect(), 20000);
-
-          // Hide the hint after first interaction (bubble click)
-          const hideHint = () => chatBox.classList.add("hint-hidden");
-          chatBox.addEventListener("click", hideHint, { once: true });
-          window.setTimeout(hideHint, 20000);
         }
 
         // Smooth scroll for links (keeps fixed header from covering targets)
