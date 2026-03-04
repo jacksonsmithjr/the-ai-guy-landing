@@ -909,6 +909,21 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
+      }
+
+      .btn-call-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      .btn-call-label .btn-line2 {
+        margin-top: 2px;
+        font-size: 0.95em;
+        letter-spacing: 0.06em;
       }
 
       /* How it works timeline */
@@ -1481,7 +1496,10 @@
 
         <div class="demo-call-wrap reveal">
           <a class="btn primary-pulse" href="tel:8289449648">
-            <span>CALL THE AI NOW — 828-944-9648</span>
+            <span class="btn-call-label">
+              <span class="btn-line1">CALL THE AI NOW</span>
+              <span class="btn-line2">828-944-9648</span>
+            </span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>
         </div>
