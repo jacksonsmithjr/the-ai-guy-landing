@@ -764,47 +764,16 @@
         border-radius: 18px;
         border: 2px dashed rgba(232, 25, 44, 0.65);
         background: rgba(232, 25, 44, 0.04);
-        height: var(--demo-chat-height);
+        min-height: 120px;
+        padding: 20px;
         overflow: visible;
-      }
-
-      .demo-mount {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: grid;
-        place-items: center;
-        overflow: visible;
-      }
-
-      .demo-fallback {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        padding: 24px;
-        pointer-events: none;
-        transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
       }
 
       .demo-hint {
-        position: absolute;
-        inset: 0;
         display: flex;
         align-items: flex-start;
         justify-content: flex-start;
         text-align: left;
-        padding: 14px 16px;
-        pointer-events: none;
-        opacity: 1;
-        transition: opacity 260ms var(--easeOut), transform 260ms var(--easeOut);
-      }
-
-      .demo-placeholder.hint-hidden .demo-hint {
-        opacity: 0;
-        transform: translateY(10px);
       }
 
       .demo-hint-card {
@@ -866,31 +835,6 @@
           transform: translateY(8px);
           opacity: 1;
         }
-      }
-
-      /* Keep the bubble widget strictly inside the placeholder (no full-width escape) */
-      .demo-mount chat-widget {
-        position: relative !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        height: var(--demo-bubble-box-h);
-        display: block;
-      }
-
-      .demo-placeholder.widget-loaded {
-        border-style: solid;
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      .demo-placeholder.widget-loaded .demo-fallback {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      .demo-mount div[data-chat-widget] {
-        width: 100%;
-        height: 100%;
-        display: block;
       }
 
       .demo-placeholder .label {
@@ -1242,11 +1186,6 @@
         .demo-placeholder {
           width: 90%;
           max-width: none;
-          height: var(--demo-chat-height-mobile);
-        }
-
-        :root {
-          --demo-bubble-box-h: 160px;
         }
       }
     </style>
@@ -1460,20 +1399,11 @@
         </div>
 
         <div class="demo-wrap reveal">
-          <div class="demo-placeholder" id="chatWidgetBox" role="region" aria-label="AI chat widget">
-            <div class="demo-fallback" aria-hidden="true">
-              <div>
-                <div class="label">[ LIVE CHAT WIDGET ]</div>
-                <div class="label" style="margin-top: 10px">
-                  <span class="updating">Loading…</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="demo-hint" id="chatHint" aria-hidden="true">
+          <div class="demo-placeholder" id="chatWidgetBox" role="region" aria-label="Text chat instruction">
+            <div class="demo-hint">
               <div class="demo-hint-card">
                 <div class="demo-hint-title">Text the AI now</div>
-                <div class="demo-hint-sub">Tap the chat bubble button to the right to get started with text.</div>
+                <div class="demo-hint-sub">Click the chat bubble to the right to get started with text.</div>
                 <div class="demo-hint-arrows" aria-hidden="true">
                   <div class="demo-hint-arrow"></div>
                   <div class="demo-hint-arrow"></div>
@@ -1481,15 +1411,6 @@
                   <div class="demo-hint-arrow"></div>
                 </div>
               </div>
-            </div>
-
-            <div class="demo-mount" id="chatWidgetMount">
-              <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
-              <script
-                src="https://beta.leadconnectorhq.com/loader.js"
-                data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
-                data-widget-id="69a86703e62eed604889e62a"
-              ></script>
             </div>
           </div>
         </div>
@@ -1667,46 +1588,6 @@
           const t = e.target;
           if (t && t.tagName === "A") setDrawer(false);
         });
-
-        // Mount GHL chat widget inside the Live Demo box (if present)
-        const chatBox = document.getElementById("chatWidgetBox");
-        const chatMount = document.getElementById("chatWidgetMount");
-        if (chatBox && chatMount) {
-          const normalize = (el) => {
-            try {
-              // Let CSS size/center the widget inside our frame.
-              el.style.position = "relative";
-              el.style.inset = "";
-            } catch (_) {}
-          };
-
-          const adoptWidget = (el) => {
-            if (!el || el.nodeType !== 1) return;
-            if (el.tagName !== "CHAT-WIDGET") return;
-            if (!chatMount.contains(el)) chatMount.appendChild(el);
-            normalize(el);
-            chatBox.classList.add("widget-loaded");
-          };
-
-          // If the loader injects the widget somewhere else (often <body>), pull it into the box.
-          document.querySelectorAll("chat-widget").forEach(adoptWidget);
-
-          const mo = new MutationObserver((mutations) => {
-            for (const m of mutations) {
-              for (const n of m.addedNodes) {
-                if (!n || n.nodeType !== 1) continue;
-                if (n.tagName === "CHAT-WIDGET") adoptWidget(n);
-                if (n.querySelectorAll) n.querySelectorAll("chat-widget").forEach(adoptWidget);
-              }
-            }
-          });
-          mo.observe(document.documentElement, { childList: true, subtree: true });
-          window.setTimeout(() => mo.disconnect(), 20000);
-
-          const hideHint = () => chatBox.classList.add("hint-hidden");
-          chatBox.addEventListener("click", hideHint, { once: true });
-          window.setTimeout(hideHint, 20000);
-        }
 
         // Smooth scroll for links (keeps fixed header from covering targets)
         const headerOffset = 78;
