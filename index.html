@@ -810,12 +810,12 @@
       .demo-hint-card {
         max-width: 46ch;
         border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(10, 10, 10, 0.42);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        padding: 14px 14px;
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+        border: 2px solid rgba(232, 25, 44, 0.5);
+        background: rgba(18, 18, 18, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 16px 18px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 24px rgba(232, 25, 44, 0.15);
       }
 
       .demo-hint-title {
@@ -823,27 +823,38 @@
         text-transform: uppercase;
         letter-spacing: 0.12em;
         font-weight: 800;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        color: #ffffff;
       }
 
       .demo-hint-sub {
         margin-top: 8px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.75);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
         line-height: 1.5;
       }
 
+      .demo-hint-arrows {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 12px;
+      }
+
       .demo-hint-arrow {
-        margin: 8px 0 0;
         width: 0;
         height: 0;
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-        border-left: 12px solid rgba(232, 25, 44, 0.85);
-        filter: drop-shadow(0 0 10px rgba(232, 25, 44, 0.25));
-        animation: hintBob 1.35s ease-in-out infinite;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 10px solid var(--accent);
+        filter: drop-shadow(0 0 8px rgba(232, 25, 44, 0.4));
+        animation: hintBob 1.2s ease-in-out infinite;
       }
+
+      .demo-hint-arrow:nth-child(1) { animation-delay: 0s; }
+      .demo-hint-arrow:nth-child(2) { animation-delay: 0.15s; }
+      .demo-hint-arrow:nth-child(3) { animation-delay: 0.3s; }
+      .demo-hint-arrow:nth-child(4) { animation-delay: 0.45s; }
 
       @keyframes hintBob {
         0%,
@@ -1448,7 +1459,12 @@
               <div class="demo-hint-card">
                 <div class="demo-hint-title">Text the AI now</div>
                 <div class="demo-hint-sub">Tap the chat bubble button to the right to get started with text.</div>
-                <div class="demo-hint-arrow"></div>
+                <div class="demo-hint-arrows" aria-hidden="true">
+                  <div class="demo-hint-arrow"></div>
+                  <div class="demo-hint-arrow"></div>
+                  <div class="demo-hint-arrow"></div>
+                  <div class="demo-hint-arrow"></div>
+                </div>
               </div>
             </div>
 
