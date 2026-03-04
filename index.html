@@ -1342,7 +1342,6 @@
               <!-- PASTE AI CHAT WIDGET EMBED CODE HERE -->
               <script
                 src="https://beta.leadconnectorhq.com/loader.js"
-                data-resources-url="https://beta.leadconnectorhq.com/chat-widget/loader.js"
                 data-widget-id="69a86703e62eed604889e62a"
               ></script>
             </div>
@@ -1524,14 +1523,38 @@
         const chatBox = document.getElementById("chatWidgetBox");
         const chatMount = document.getElementById("chatWidgetMount");
         if (chatBox && chatMount) {
-          const markLoaded = () => {
-            const hasWidget =
-              chatMount.querySelector("chat-widget") || chatMount.querySelector("div[data-chat-widget]") || chatMount.querySelector("iframe");
-            if (hasWidget) chatBox.classList.add("widget-loaded");
+          const normalize = (el) => {
+            try {
+              el.style.position = "absolute";
+              el.style.inset = "0";
+              el.style.width = "100%";
+              el.style.height = "100%";
+              el.style.maxWidth = "100%";
+              el.style.maxHeight = "100%";
+            } catch (_) {}
           };
-          markLoaded();
-          const mo = new MutationObserver(() => markLoaded());
-          mo.observe(chatMount, { childList: true, subtree: true });
+
+          const adoptWidget = (el) => {
+            if (!el || el.nodeType !== 1) return;
+            if (el.tagName !== "CHAT-WIDGET") return;
+            if (!chatMount.contains(el)) chatMount.appendChild(el);
+            normalize(el);
+            chatBox.classList.add("widget-loaded");
+          };
+
+          // If the loader injects the widget somewhere else (often <body>), pull it into the box.
+          document.querySelectorAll("chat-widget").forEach(adoptWidget);
+
+          const mo = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+              for (const n of m.addedNodes) {
+                if (!n || n.nodeType !== 1) continue;
+                if (n.tagName === "CHAT-WIDGET") adoptWidget(n);
+                if (n.querySelectorAll) n.querySelectorAll("chat-widget").forEach(adoptWidget);
+              }
+            }
+          });
+          mo.observe(document.documentElement, { childList: true, subtree: true });
           window.setTimeout(() => mo.disconnect(), 20000);
         }
 
